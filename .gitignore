@@ -159,3 +159,6 @@ pix2tex/dataset/multiline/val/*.png
 pix2tex/dataset/multiline/test/*.png
 pix2tex/dataset/multiline/*.pkl
 multiline_checkpoints/*
+imagenes/**
+**.png
+notebooks/visuals/comparison-mergedexample.png
