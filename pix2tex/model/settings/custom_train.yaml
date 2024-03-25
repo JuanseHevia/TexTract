@@ -33,12 +33,12 @@ max_width: 672
 micro_batchsize: -1
 min_height: 32
 min_width: 32
-model_path: hw_checkpoints
+model_path: custom_checkpoints
 name: pix2tex
 num_layers: 4
 num_tokens: 8000
 optimizer: Adam
-output_path: hw_outputs
+output_path: custom_outputs
 pad: false
 pad_token: 0
 patch_size: 16
