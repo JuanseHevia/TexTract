@@ -7,10 +7,10 @@ backbone_layers:
 betas:
   - 0.9
   - 0.999
-batchsize: 8
+batchsize: 32
 bos_token: 1
 channels: 1
-data: dataset/multiline/train_dataset.pkl
+data: dataset/multiline/train_resized.pkl
 debug: false
 decoder_args:
   attn_on_attn: true
@@ -31,20 +31,20 @@ lr_step: 30
 max_height: 192
 max_seq_len: 512
 max_width: 672
-micro_batchsize: -1
+micro_batchsize: 8
 min_height: 32
 min_width: 32
 model_path: multiline_checkpoints
-name: local_multiline_pix2text_round2
+name: local_multiline_pix2text-resized-0324
 num_layers: 4
 num_tokens: 8000
 optimizer: Adam
 output_path: multiline_outputs
-pad: false
+pad: true
 pad_token: 0
 patch_size: 16
-sample_freq: 100
-save_freq: 5
+sample_freq: 300
+save_freq: 1
 scheduler: StepLR
 seed: 42
 encoder_structure: hybrid
@@ -53,4 +53,4 @@ test_samples: 5
 testbatchsize: 20
 tokenizer: dataset/tokenizer.json
 valbatches: 100
-valdata: dataset/multiline/val_dataset.pkl
+valdata: dataset/multiline/val_resized.pkl
