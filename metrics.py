@@ -112,6 +112,7 @@ def evaluate(model, dataset: Im2LatexDataset, args: Munch, num_batches: int = No
         for predi, truthi in zip(token2str(dec, dataset.tokenizer), token2str(seq['input_ids'], dataset.tokenizer)):
             ts = post_process(truthi)
             if len(ts) > 0:
+                edit_dist = distance(post_process(predi), ts)/len(ts)
                 edit_dists.append(distance(post_process(predi), ts)/len(ts))
         dec = dec.cpu()
         tgt_seq = seq['input_ids'][:, 1:]
@@ -134,6 +135,7 @@ def evaluate(model, dataset: Im2LatexDataset, args: Munch, num_batches: int = No
                              'pred_tokens':pred,
                              'truth_tokens':truth,
                              'bleu':bleu_score,
+                             'edit_dist': edit_dist,
                              'token acc':tok_acc}
         if num_batches is not None and i >= num_batches:
             break
