@@ -146,7 +146,7 @@ def evaluate(model, dataset: Im2LatexDataset, args: Munch, num_batches: int = No
 
     print('\n%s\n%s' % (truth, pred))
     print('BLEU: %.2f' % bleu_score)
-    return bleu_score, edit_distance, token_accuracy, bleus, edit_dists, token_acc, preds
+    return bleu_score, edit_distance, token_accuracy, bleus, edit_dists, token_acc, press, pred_truth
 
 def parse_prediction(pred):
     pred = np.array(pred).squeeze()
