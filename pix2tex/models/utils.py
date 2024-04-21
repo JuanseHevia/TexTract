@@ -33,6 +33,16 @@ class Model(nn.Module):
 
     @torch.no_grad()
     def generate(self, x: torch.Tensor, temperature: float = 0.25):
+        # 1. split in lines
+        # 2. for each line, generate a prediction
+        # return concatenated predictions
+        # lines = split(x)
+        # for line in lines:
+        #     pred = self.decoder.generate((torch.LongTensor([self.args.bos_token]*len(x))[:, None]).to(x.device), self.args.max_seq_len,
+        #                                  eos_token=self.args.eos_token, context=self.encoder(x), temperature=temperature)
+            
+        # '//'.join()
+
         return self.decoder.generate((torch.LongTensor([self.args.bos_token]*len(x))[:, None]).to(x.device), self.args.max_seq_len,
                                      eos_token=self.args.eos_token, context=self.encoder(x), temperature=temperature)
 
