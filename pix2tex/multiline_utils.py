@@ -1,9 +1,32 @@
+from typing import Tuple
+import cv2
 import numpy as np
 import torch
 
+def convert_to_candidate_size(arr, candidates):
+    """
+    Given an array representing an image of (H, W) dimensions,
+    match the closest candidate size from the list of candidate sizes.
+    The list is ordered in ascending order, and the closest candidate size
+    is the first tuple that is above both height and width values
+    """
+    H, W, _ = arr.shape
+    new_shape = arr.shape
+    for candidate in candidates:
+        if candidate[1] >= H and candidate[0] >= W:
+            new_w = candidate[0]
+            new_h = candidate[1]
+            break
+    
+    # pad the image 
+    new_arr = np.ones((new_h, new_w, 1)) * -1
+    new_arr[:H, :W, :] = arr
+    return new_arr
+    
+
 class ImageTensor:
 
-    def __init__(self, tensor, th=1):
+    def __init__(self, tensor, candidate_sizes, th=1):
         """
         Load an image tensor and a threshold for blank space detection.
         Threshold is defaulted to 1 because of Normalization in the
@@ -11,6 +34,7 @@ class ImageTensor:
         """
         self.arr = tensor.permute(1,2,0).numpy()
         self.th = th
+        self.candidate_sizes = candidate_sizes
 
 
     def _find_blank_space(self):
@@ -51,7 +75,11 @@ class ImageTensor:
             if i == 0:
                 continue
             line = self.arr[agg_blanks[i-1]:yblank]
+
+            # resize to meet model dimension constraints
+            line = convert_to_candidate_size(line, candidates=self.candidate_sizes)
+            
             # convert to Tensor
-            line = torch.tensor(line).permute(2,0,1)
+            line = torch.tensor(line, dtype=torch.float32).permute(2,0,1)
             lines.append(line)
         return lines

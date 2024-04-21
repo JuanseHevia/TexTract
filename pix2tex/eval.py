@@ -14,7 +14,7 @@ from Levenshtein import distance
 from pix2tex.models import get_model, Model
 from pix2tex.utils import *
 
-import multiline_utils
+from pix2tex import multiline_utils
 
 
 def detokenize(tokens, tokenizer):
