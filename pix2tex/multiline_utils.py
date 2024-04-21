@@ -51,5 +51,7 @@ class ImageTensor:
             if i == 0:
                 continue
             line = self.arr[agg_blanks[i-1]:yblank]
+            # convert to Tensor
+            line = torch.tensor(line).permute(2,0,1)
             lines.append(line)
         return lines
