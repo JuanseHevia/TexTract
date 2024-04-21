@@ -14,6 +14,8 @@ from Levenshtein import distance
 from pix2tex.models import get_model, Model
 from pix2tex.utils import *
 
+import multiline_utils
+
 
 def detokenize(tokens, tokenizer):
     toks = [tokenizer.convert_ids_to_tokens(tok) for tok in tokens]
@@ -51,8 +53,20 @@ def evaluate(model: Model, dataset: Im2LatexDataset, args: Munch, num_batches: i
         if seq is None or im is None:
             continue
         #loss = decoder(tgt_seq, mask=tgt_mask, context=encoded)
-        dec = model.generate(im.to(device), temperature=args.get('temperature', .2))
-        pred = detokenize(dec, dataset.tokenizer)
+        pre_split_img = multiline_utils.ImageTensor(im, th=1)
+        lines = pre_split_img.split_img_into_lines()
+        if len(lines) == 1:
+            # compute inference over one line only
+            dec = model.generate(lines[0].to(device), temperature=args.get('temperature', .2))
+            pred = detokenize(dec, dataset.tokenizer)
+
+        else:
+            # compute inference over multiple lines
+            truth = []
+            for line in lines:
+                dec = model.generate(line.to(device), temperature=args.get('temperature', .2))
+                pred = detokenize(dec, dataset.tokenizer) + ["//"] # append the newline token
+                
         truth = detokenize(seq['input_ids'], dataset.tokenizer)
         bleus.append(metrics.bleu_score(pred, [alternatives(x) for x in truth]))
         for predi, truthi in zip(token2str(dec, dataset.tokenizer), token2str(seq['input_ids'], dataset.tokenizer)):
